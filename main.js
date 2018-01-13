@@ -14,6 +14,9 @@ function createWindow() {
       slashes: true
     })
   )
+  mainWindow.on('closed', function () {
+    mainWindow = null;
+  })
 }
 
 app.on('ready', createWindow)
