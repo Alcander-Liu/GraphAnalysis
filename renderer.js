@@ -1,4 +1,18 @@
 
+const csvtojson = require('csvtojson')({
+  noheader: true,
+  headers: ['type', 'name', 'rate']
+});
+
+let data = {};
+
+csvtojson
+.fromFile('data/movie.csv')
+.on('end_parsed', (jsonArrObj) => {
+  data.node = jsonArrObj
+  console.log(JSON.stringify(data, null, '  '));
+})
+
 var j3 = $('#aaa');
 j3.on('click', function () {
   j3.text('you click, I change');

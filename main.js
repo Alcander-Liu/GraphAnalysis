@@ -10,10 +10,11 @@ function createWindow() {
   mainWindow = new BrowserWindow({width: 1600, height: 900});
   mainWindow.loadURL(url.format({
       pathname: path.join(__dirname, 'index.html'),
-      protocal: 'file',
+      protocol: 'file:',
       slashes: true
     })
   )
+  mainWindow.webContents.openDevTools();
   mainWindow.on('closed', function () {
     mainWindow = null;
   })
@@ -30,3 +31,5 @@ app.on('activate', function () {
   if (mainWindow === null)
     createWindow();
 })
+
+console.log('converter');
