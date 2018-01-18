@@ -1,15 +1,30 @@
 
 const csvtojson = require('csvtojson')({
   noheader: true,
-  headers: ['type', 'name', 'rate']
+  headers: ['movieName', 'userName']
 });
 
-let data = {};
-
+let data = {node:[]};
+let j = 0;
 csvtojson
-.fromFile('data/movie.csv')
+.fromFile('data/user.csv')
+.on('json', (jsonObj) => {
+  console.log(j);
+  j += 1;
+})
 .on('end_parsed', (jsonArrObj) => {
-  data.node = jsonArrObj
+  console.log(JSON.stringify(jsonArrObj, null, ' '));
+  for(var i = 0; i < jsonArrObj.length; i++) {
+    console.log(i);
+    if(data.node.length === 0 || jsonArrObj[i].movieName !== data.node[data.node.length - 1].name)
+      data.node.push({
+        index: data.node.length,
+        name: jsonArrObj[i].movieName,
+        users: [jsonArrObj[i].userName]
+      });
+    else
+      data.node[data.node.length - 1].users.push(jsonArrObj[i].userName);
+  }
   console.log(JSON.stringify(data, null, '  '));
 })
 
