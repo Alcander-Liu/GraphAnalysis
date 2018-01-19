@@ -11,26 +11,48 @@ const intersect = require('intersect');
 
 let data = {node:[], edge:[]};
 let j = 0;
+let nodeAmount = 0;
 csvtojson
 .fromFile('./data/user.csv')
 .on('json', (jsonObj) => {
   console.log(j);
   j += 1;
-  if(data.node.length === 0 || jsonObj.movieName !== data.node[data.node.length - 1].name)
-    data.node.push({
+  if(nodeAmount === 0 || jsonObj.movieName !== data.node[data.node.length - 1].name) {
+    let j = nodeAmount - 1;
+    for(let i = 0; i < j; i++) {
+      //console.log(i);
+      let len = intersect.big(data.node[j].users, data.node[i].users).length;
+      if(len !== 0) {
+        data.edge.push(
+          {
+            startNode: j,
+            endNode: i,
+            value: len
+          },
+          {
+            startNode: i,
+            endNode: j,
+            value: len
+          }
+        );
+      }
+    }
+    nodeAmount = data.node.push({
       index: data.node.length,
       name: jsonObj.movieName,
       users: [jsonObj.userName]
     });
+  }
   else
-    data.node[data.node.length - 1].users.push(jsonObj.userName);
+    data.node[nodeAmount - 1].users.push(jsonObj.userName);
+  
   //console.log(JSON.stringify(jsonObj, null, '  '));
 })
 .on('error', (error) => {
   console.log(error);
 })
 .on('end', () => {
-  let index = 0;
+  /*let index = 0;
   for(let i = 0; i < data.node.length; i++) {
     console.log(i);
     data.node[i].firstEdgeIndex = index;
@@ -42,13 +64,16 @@ csvtojson
         data.edge.push({
           startNode: i,
           endNode: j,
-          value: intersect.big(data.node[i].users, data.node[j].users).length
+          value: len
         });
         index += 1;
       }
     }
-  }
-  data.node.push({firstEdgeIndex: index});
+  }*/
+  //data.node.push({firstEdgeIndex: index});
+  data.edge.sort((a, b) => {
+    return a.startNode > b.startNode;
+  })
   console.log(JSON.stringify(data, null, '  '));
 })
 
