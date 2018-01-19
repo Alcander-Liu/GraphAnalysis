@@ -1,16 +1,23 @@
 
 const csvtojson = require('csvtojson')({
   noheader: true,
+  trim: false,
+  flatKeys: true,
+  quote: "off",
   headers: ['movieName', 'userName']
 });
 
 let data = {node:[]};
 let j = 0;
 csvtojson
-.fromFile('data/user.csv')
+.fromFile('./data/user.csv')
 .on('json', (jsonObj) => {
   console.log(j);
   j += 1;
+  //console.log(JSON.stringify(jsonObj, null, '  '));
+})
+.on('error', (error) => {
+  console.log(error);
 })
 .on('end_parsed', (jsonArrObj) => {
   console.log(JSON.stringify(jsonArrObj, null, ' '));
