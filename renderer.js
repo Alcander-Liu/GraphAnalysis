@@ -7,31 +7,48 @@ const csvtojson = require('csvtojson')({
   headers: ['movieName', 'userName']
 });
 
-let data = {node:[]};
+const intersect = require('intersect');
+
+let data = {node:[], edge:[]};
 let j = 0;
 csvtojson
 .fromFile('./data/user.csv')
 .on('json', (jsonObj) => {
   console.log(j);
   j += 1;
+  if(data.node.length === 0 || jsonObj.movieName !== data.node[data.node.length - 1].name)
+    data.node.push({
+      index: data.node.length,
+      name: jsonObj.movieName,
+      users: [jsonObj.userName]
+    });
+  else
+    data.node[data.node.length - 1].users.push(jsonObj.userName);
   //console.log(JSON.stringify(jsonObj, null, '  '));
 })
 .on('error', (error) => {
   console.log(error);
 })
-.on('end_parsed', (jsonArrObj) => {
-  console.log(JSON.stringify(jsonArrObj, null, ' '));
-  for(var i = 0; i < jsonArrObj.length; i++) {
+.on('end', () => {
+  let index = 0;
+  for(let i = 0; i < data.node.length; i++) {
     console.log(i);
-    if(data.node.length === 0 || jsonArrObj[i].movieName !== data.node[data.node.length - 1].name)
-      data.node.push({
-        index: data.node.length,
-        name: jsonArrObj[i].movieName,
-        users: [jsonArrObj[i].userName]
-      });
-    else
-      data.node[data.node.length - 1].users.push(jsonArrObj[i].userName);
+    data.node[i].firstEdgeIndex = index;
+    for(let j = 0; j < data.node.length; j++) {
+      if(i === j)
+        continue;
+      let len = intersect.big(data.node[i].users, data.node[j].users).length;
+      if(len !== 0) {
+        data.edge.push({
+          startNode: i,
+          endNode: j,
+          value: intersect.big(data.node[i].users, data.node[j].users).length
+        });
+        index += 1;
+      }
+    }
   }
+  data.node.push({firstEdgeIndex: index});
   console.log(JSON.stringify(data, null, '  '));
 })
 
