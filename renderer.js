@@ -9,6 +9,48 @@ const csvtojson = require('csvtojson')({
 
 const intersect = require('intersect');
 
+const shortestRouteBlock = $('#shortestRouteBlock');
+const shortestRouteButton = $('#shortestRoute');
+const minTreeButton = $('#minTree');
+const connectedComponentButton = $('#connectedComponent');
+const searchButton = $('#searchButton');
+const updateButton = $('#updateButton');
+const connectedComponentBlock = $('#connectedComponentBlock');
+
+shortestRouteBlock.hide();
+connectedComponentBlock.hide();
+
+shortestRouteButton.on('click', () => {
+  shortestRouteBlock.show();
+  connectedComponentBlock.hide();
+})
+
+connectedComponentButton.on('click', () => {
+  shortestRouteBlock.hide();
+  connectedComponentBlock.show();
+})
+
+searchButton.on('click', () => {
+  let startNode = $('#startNode').val();
+  let endNode = $('#endNode').val();
+  console.log(startNode);
+  console.log(endNode);
+  if(!/^\d+$/.test(startNode) || !/^\d+$/.test(endNode)) {
+    alert('请输入合法的数字!');
+    return;
+  }
+  
+})
+
+updateButton.on('click', () => {
+  let edgeWeight = $('#edgeWeight').val();
+  if(!/^\d+$/.test(edgeWeight)){
+    alert('请输入合法的数字!');
+    return;
+  }
+  
+})
+
 let data = {node:[], edge:[]};
 let j = 0;
 let nodeAmount = 0;
@@ -72,10 +114,19 @@ csvtojson
   }*/
   //data.node.push({firstEdgeIndex: index});
   data.edge.sort((a, b) => {
-    return a.startNode > b.startNode;
+    return a.startNode - b.startNode;
+  })
+  let index = 0;
+  for(let i = 0; i < data.node.length; i++) {
+    data.node[i].firstEdgeIndex = index;
+    while(index < data.edge.length && data.edge[index].startNode === i)
+      index += 1;
+  }
+  data.node.push({
+    firstEdgeIndex: data.edge.length
   })
   console.log(JSON.stringify(data, null, '  '));
-})
+});
 
 var j3 = $('#aaa');
 j3.on('click', function () {

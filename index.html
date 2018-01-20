@@ -7,11 +7,27 @@
     <title>Graph Analysis</title>
   </head>
   <body>
-    <p><p id='aaa'>hello world</p></p>
-    <ul id="test-ul">
-        <li class="js">JavaScript</li>
-        <li name="book">Java &amp; JavaScript</li>
-    </ul>
+    <div>
+        <button id='shortestRoute'>搜寻最短路</button>
+        <button id='minTree'>最短树</button>
+        <button id='connectedComponent'>连通分量</button>
+      </div>
+      <div id='shortestRouteBlock'>
+        <p>起点编号<input type='text' id='startNode'></p>
+        <p>终点编号<input type='text' id='endNode'>
+        <button id='searchButton'>搜索</button></p>
+      </div>
+      <div id='connectedComponentBlock'>
+        <p>边权阀值<input type='text' id='edgeWeight'>
+        <button id='updateButton'>更新</button></p>
+      </div>
+      <div>
+          <div id='aaa'>hello world</div><div>abcccc</div>
+          <ul id="test-ul">
+            <li class="js">JavaScript</li>
+            <li name="book">Java &amp; JavaScript</li>
+          </ul>
+      </div>
   </body>
 </html>
 <style>
