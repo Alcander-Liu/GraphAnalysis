@@ -49,14 +49,16 @@ searchButton.on('click', () => {
     link.attr("stroke", "#999")
     .attr("stroke-width", "0.5px")
     .attr("stroke-opacity", 0.3);
-
+    let pathString = data.edge[result.path[0]].startNode.toString();
     for(let j = 0; j < result.path.length; j++) {
+      pathString += (' => ' + data.edge[result.path[j]].endNode.toString());
       link.filter(function (d, i) {
         return i === result.path[j];
       }).attr("stroke", "red")
       .attr("stroke-width", "2.0px")
       .attr("stroke-opacity", 1.0);
     }
+    alert('最短路径: ' + pathString + '\n路径长度为: ' + result.distance);
   });
 });
 
@@ -80,6 +82,19 @@ updateButton.on('click', () => {
   }
   connectedComponent(data, parseInt(edgeWeight)).then((result) => {
     console.log(result);
+    link.attr("stroke", "#999")
+    .attr("stroke-width", "0.5px")
+    .attr("stroke-opacity", 0.3);
+    for(let j = 0; j < result.length; j++) {
+      for(let k = 0; k < result[j]; k++) {
+        link.filter(function (d, i) {
+          return i === result.path[j];
+        }).attr("stroke", color(j+1))
+        .attr("stroke-width", "2.0px")
+        .attr("stroke-opacity", 1.0);
+      } 
+    }
+    alert("连通支数量为: " + result.length);
   })
 })
 
