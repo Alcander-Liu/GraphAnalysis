@@ -1,4 +1,4 @@
-export function connectedComponent (graph,weight) {
+module.exports =  function connectedComponent (graph,weight) {
     //返回每一个元素为一个连通支的边的集合的一个数组;连通分量可由result.length得到;
     return new Promise ((resolve, reject) => { 
       try {
