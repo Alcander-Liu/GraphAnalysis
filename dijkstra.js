@@ -1,4 +1,4 @@
-export function dijkstra(graph,head,tail)   {
+module.exports = function dijkstra(graph,head,tail)   {
     //正确返回值:最短路径对应边的下标的倒序数组(从尾到头),距离;
     return new Promise((resolve,reject) => {
         try {

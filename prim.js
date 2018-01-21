@@ -1,4 +1,4 @@
-export function Prim(graph)  {
+export function Prim(graph) {
     return new Promise ((resolve,reject) => {
     //返回最小支撑林forest:为一个tree的数组;
     //每一个tree中,node数组存放tree中的点在graph中的下标,edge存边的下标;
