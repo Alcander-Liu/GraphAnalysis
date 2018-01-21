@@ -8,29 +8,33 @@ module.exports = function Prim(graph) {
     for(let i = 0;i < length;++i)  {
       ifNodeAdded.push(false);
     }
-    var nearestnode = new Array(length);
-    var nearestweight = new Array(length);
-    var currentnode,accountnode,nextnode;
+    var nearestnode = Array(length);
+    var nearestweight = Array(length);
+    var currentnode,nextnode;
     var forest = Array();
     var tree = {node:[],edge:[]};
     var newweight;
-    //v0加入树中;
-    accountnode = 0;
-    while(accountnode < length)  {
-      for(let i in ifNodeAdded) {
+    currentnode = -1;
+    while(1)  {
+      nextnode = currentnode;
+      for(let i = 0;i < length;++i) {
         //找到一个未标记的节点;
         if(ifNodeAdded[i] === false)  {
-          currentnode = i;
+          nextnode = i;
           break;
         }
       }
-      tree.node = Array(0);
+      if(nextnode === currentnode){
+        break;
+      }
+      currentnode = nextnode;
+      tree.node = new Array(0);
       tree.node.push(currentnode);
-      tree.edge = Array();
+      tree.edge = new Array(0);
       ifNodeAdded[currentnode] = true;
-      for(let i in nearestnode) {
+      for(let i = 0;i < length;++i) {
         nearestnode[i] = -1;
-        nearestweight = Infinity;
+        nearestweight[i] = Infinity;
       }
       //对currentnode所在连通支求最小生成树;
       while(1)  {
@@ -70,14 +74,19 @@ module.exports = function Prim(graph) {
               break;
             }
         }
-        accountnode++;
-        if(accountnode === length) {
-          break;
-        }
         currentnode = nextnode;
         ifNodeAdded[currentnode] = true;
       }
-      forest.push(tree);
+      let newtree = {node:[],edge:[]};
+      newtree.node = Array(tree.node.length);
+      newtree.edge = Array(tree.edge.length);
+      for(let i = 0;i < tree.node.length;++i){
+        newtree.node[i] = tree.node[i];
+      }
+      for(let i = 0;i < tree.edge.length;++i){
+        newtree.edge[i] = tree.edge[i];
+      }
+      forest.push(newtree);
     }
     resolve(forest);
     }catch(e)   { 
