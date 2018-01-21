@@ -33,7 +33,7 @@ connectedComponentButton.on('click', () => {
   connectedComponentBlock.show();
 })
 
-let link;
+let link, node;
 
 searchButton.on('click', () => {
   let startNode = $('#startNode').val();
@@ -59,18 +59,30 @@ searchButton.on('click', () => {
       .attr("stroke-opacity", 1.0);
     }
     alert('最短路径: ' + pathString + '\n路径长度为: ' + result.distance);
+  })
+  .catch((reason) => {
+    alert(reason);
   });
 });
 
 minTreeButton.on('click', () => {
+  link.attr("stroke", "#999")
+  .attr("stroke-width", "0.5px")
+  .attr("stroke-opacity", 0.3);
   prim(data).then((result) => {
-    for(let i = 0; i < result.length; i++) {
-      for(let j = 0; j < result[i].edge.length; i++) {
-        while(index !== result.path[i])
-          index += 1;
-        edges[index].attr("color", '#000000');
-      }
+    console.log(result);
+    for(let j = 0; j < result.length; j++) {
+      for(let k = 0; k < result[j].edge.length; k++) {
+        link.filter(function (d, i) {
+          return i === result[j].edge[k];
+        }).attr("stroke", "green")
+        .attr("stroke-width", "2.0px")
+        .attr("stroke-opacity", 1.0);
+      } 
     }
+  })
+  .catch((reason) => {
+    alert(reason);
   });
 })
 
@@ -86,9 +98,9 @@ updateButton.on('click', () => {
     .attr("stroke-width", "0.5px")
     .attr("stroke-opacity", 0.3);
     for(let j = 0; j < result.length; j++) {
-      for(let k = 0; k < result[j]; k++) {
+      for(let k = 0; k < result[j].length; k++) {
         link.filter(function (d, i) {
-          return i === result.path[j];
+          return i === result[j][k];
         }).attr("stroke", color(j+1))
         .attr("stroke-width", "2.0px")
         .attr("stroke-opacity", 1.0);
@@ -96,6 +108,9 @@ updateButton.on('click', () => {
     }
     alert("连通支数量为: " + result.length);
   })
+  .catch((reason) => {
+    alert(reason);
+  });
 })
 
 var svg = d3.select("svg"),
@@ -111,19 +126,22 @@ var simulation = d3.forceSimulation()
     .force("center", d3.forceCenter(width / 2, height / 2));
 
 let data = {node:[], edge:[]};
-let j = 0;
+let progressAmount = 0;
 let nodeAmount = 0;
+let maxIntersection = 0;
 csvtojson
 .fromFile('./data/user.csv')
 .on('json', (jsonObj) => {
-  progress.text('已读取数据条数: ' + j);
-  console.log(j);
-  j += 1;
+  progress.text('已读取数据条数: ' + progressAmount);
+  console.log(progressAmount);
+  progressAmount += 1;
   if(nodeAmount === 0 || jsonObj.movieName !== data.node[data.node.length - 1].id) {
     let j = nodeAmount - 1;
     for(let i = 0; i < j; i++) {
       //console.log(i);
       let len = intersect.big(data.node[j].users, data.node[i].users).length;
+      if(len > maxIntersection)
+        maxIntersection = len;
       if(len !== 0) {
         data.edge.push(
           {
@@ -159,10 +177,13 @@ csvtojson
 })
 .on('end', () => {
   progress.text('建图中...');
-  //data.node.push({firstEdgeIndex: index});
   data.edge.sort((a, b) => {
     return a.startNode - b.startNode;
-  })
+  });
+  data.edge.forEach((e) => {
+    e.value = maxIntersection + 1 - e.value;
+  });
+
   let index = 0;
   for(let i = 0; i < data.node.length; i++) {
     data.node[i].firstEdgeIndex = index;
@@ -182,7 +203,7 @@ csvtojson
       .attr("stroke-width", "0.5px")
       .attr("stroke-opacity", 0.3);
 
-  var node = svg.append("g")
+  node = svg.append("g")
       .attr("class", "nodes")
     .selectAll("circle")
     .data(data.node)
