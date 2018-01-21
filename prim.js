@@ -1,21 +1,22 @@
-export function Prim(graph) {
+module.exports = function Prim(graph) {
     return new Promise ((resolve,reject) => {
     //返回最小支撑林forest:为一个tree的数组;
     //每一个tree中,node数组存放tree中的点在graph中的下标,edge存边的下标;
     try{
-    var ifNodeAdded;
-    for(let i = 0;i < graph.node.length;++i)  {
+    var ifNodeAdded = Array(0); 
+    var length = graph.node.length-1;
+    for(let i = 0;i < length;++i)  {
       ifNodeAdded.push(false);
     }
-    var nearestnode = new Array(graph.node.length);
-    var nearestweight = new Array(graph.node.length);
+    var nearestnode = new Array(length);
+    var nearestweight = new Array(length);
     var currentnode,accountnode,nextnode;
-    var forest;
+    var forest = Array();
     var tree = {node:[],edge:[]};
     var newweight;
     //v0加入树中;
     accountnode = 0;
-    while(accountnode < graph.node.length)  {
+    while(accountnode < length)  {
       for(let i in ifNodeAdded) {
         //找到一个未标记的节点;
         if(ifNodeAdded[i] === false)  {
@@ -23,7 +24,8 @@ export function Prim(graph) {
           break;
         }
       }
-      tree.node = [ currentnode ];
+      tree.node = Array(0);
+      tree.node.push(currentnode);
       tree.edge = Array();
       ifNodeAdded[currentnode] = true;
       for(let i in nearestnode) {
@@ -34,8 +36,7 @@ export function Prim(graph) {
       while(1)  {
         //更新新加入点的相邻点的到Tree的距离;
         for(let i = graph.node[currentnode].firstEdgeIndex;
-          i < graph.node[currentnode+1].firstEdgeIndex && i < graph.edge.length;
-          ++i)  {
+          i < graph.edge.length && i < graph.node[currentnode+1].firstEdgeIndex;++i)  {
           if(ifNodeAdded[graph.edge[i].endNode] === true) {
             continue;
           }
@@ -63,14 +64,14 @@ export function Prim(graph) {
         tree.node.push(nextnode);
         //找出新加入的边;
         for(let j = graph.node[nextnode].firstEdgeIndex;
-          j < graph.node.length || j < graph.node[nextnode+1].firstEdgeIndex;
-          ++j)  {
+            j < graph.edge.length && j < graph.node[nextnode+1].firstEdgeIndex;++j)  {
             if(graph.edge[j].endNode === nearestnode[nextnode]) {
               tree.edge.push(j);
+              break;
             }
         }
         accountnode++;
-        if(accountnode === graph.node.length) {
+        if(accountnode === length) {
           break;
         }
         currentnode = nextnode;
