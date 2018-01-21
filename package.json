@@ -1,0 +1,32 @@
+{
+  "name": "graphanalysis",
+  "version": "1.0.0",
+  "description": "term project of the graph theory course, fall 2017",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "electron ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Alcander-Liu/GraphAnalysis.git"
+  },
+  "keywords": [
+    "graph",
+    "analysis",
+    "thu"
+  ],
+  "author": "Chia-Wei Alcander Liu",
+  "license": "ISC",
+  "devDependencies": {
+    "array-intersection": "^0.1.2",
+    "csvtojson": "^1.1.9",
+    "electron": "~1.7.10",
+    "intersect": "^1.0.1",
+    "jquery": "^3.2.1"
+  },
+  "bugs": {
+    "url": "https://github.com/Alcander-Liu/GraphAnalysis/issues"
+  },
+  "homepage": "https://github.com/Alcander-Liu/GraphAnalysis#readme"
+}
