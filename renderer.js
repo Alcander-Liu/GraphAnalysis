@@ -8,8 +8,9 @@ const csvtojson = require('csvtojson')({
 });
 
 const intersect = require('intersect');
-//const prim = require('./helper.js');
+const prim = require('./prim.js');
 const dijkstra = require('./dijkstra.js');
+const connectedComponent = require('./connectedComponent.js');
 const shortestRouteBlock = $('#shortestRouteBlock');
 const shortestRouteButton = $('#shortestRoute');
 const minTreeButton = $('#minTree');
@@ -17,6 +18,7 @@ const connectedComponentButton = $('#connectedComponent');
 const searchButton = $('#searchButton');
 const updateButton = $('#updateButton');
 const connectedComponentBlock = $('#connectedComponentBlock');
+const progress = $('#progress');
 
 shortestRouteBlock.hide();
 connectedComponentBlock.hide();
@@ -42,14 +44,30 @@ searchButton.on('click', () => {
   }
   dijkstra(data, parseInt(startNode), parseInt(endNode)).then((result) => {
     let edges = d3.selectAll('.links');
+    edges.style("color", function(d, i) {
+      if(result.path.find(i)) return "#000000"
+      else return '#999';
+    })
     let index = 0;
     for(let i = 0; i < result.path.length; i++) {
       while(index !== result.path[i])
         index += 1;
       edges[index].attr("color", '#000000');
     }
-  })
+  });
 
+});
+
+minTreeButton.on('click', () => {
+  prim(data).then((result) => {
+    for(let i = 0; i < result.length; i++) {
+      for(let j = 0; j < result[i].edge.length; i++) {
+        while(index !== result.path[i])
+          index += 1;
+        edges[index].attr("color", '#000000');
+      }
+    }
+  });
 })
 
 updateButton.on('click', () => {
@@ -79,6 +97,7 @@ let nodeAmount = 0;
 csvtojson
 .fromFile('./data/user.csv')
 .on('json', (jsonObj) => {
+  progress.text('已读取数据条数: ' + j);
   console.log(j);
   j += 1;
   if(nodeAmount === 0 || jsonObj.movieName !== data.node[data.node.length - 1].id) {
@@ -120,7 +139,7 @@ csvtojson
   console.log(error);
 })
 .on('end', () => {
-
+  progress.text('建图中...');
   //data.node.push({firstEdgeIndex: index});
   data.edge.sort((a, b) => {
     return a.startNode - b.startNode;
@@ -172,36 +191,5 @@ csvtojson
         .attr("cx", function(d) { return d.x; })
         .attr("cy", function(d) { return d.y; });
   }
+  progress.text('建图完成');
 });
-
-var j3 = $('#aaa');
-j3.on('click', function () {
-  j3.text('you click, I change');
-  var a = 1;
-  console.log(a);
-});
-var j1 = $('#test-ul li.js');
-var j2 = $('#test-ul li[name=book]');
-j1.html('<span style="color: red">JavaScript</span>');
-j2.text('JavaScript & ECMAScript');
-
-
-
-
-
-function dragstarted(d) {
-  if (!d3.event.active) simulation.alphaTarget(0.3).restart();
-  d.fx = d.x;
-  d.fy = d.y;
-}
-
-function dragged(d) {
-  d.fx = d3.event.x;
-  d.fy = d3.event.y;
-}
-
-function dragended(d) {
-  if (!d3.event.active) simulation.alphaTarget(0);
-  d.fx = null;
-  d.fy = null;
-}
