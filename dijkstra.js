@@ -78,11 +78,13 @@ module.exports = function dijkstra(graph,head,tail)   {
             });
         }catch(e){
             if(e === "arrayBoundsOverflow"){
-                reject(e);
+                errorMessage = "越界访问!";
+                reject(errorMessage);
             }else if(e === "cannotReach"){
-                reject(e);
+                errorMessage = "两节点间不存在通路!"
+                reject(errorMessage);
             }else{
-                errorMessage = 'sth happened!';
+                errorMessage = '出现未知错误!';
                 reject(errorMessage);
             }
         }
