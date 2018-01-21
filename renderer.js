@@ -6,9 +6,9 @@ const csvtojson = require('csvtojson')({
   headers: ['movieName', 'userName']
 });
 const intersect = require('intersect');
-const prim = require('./prim.js');
-const dijkstra = require('./dijkstra.js');
-const connectedComponent = require('./connectedComponent.js');
+const prim = require('./algorithm/prim.js');
+const dijkstra = require('./algorithm/dijkstra.js');
+const connectedComponent = require('./algorithm/connectedComponent.js');
 
 // 按钮与显示DOM
 const shortestRouteBlock = $('#shortestRouteBlock');
@@ -130,11 +130,11 @@ updateButton.on('click', () => {
 })
 
 // 建图
-var svg = d3.select("svg"),
+let svg = d3.select("svg"),
     width = +svg.attr("width"),
     height = +svg.attr("height");
-var color = d3.scaleOrdinal(d3.schemeCategory20);
-var simulation = d3.forceSimulation()
+let color = d3.scaleOrdinal(d3.schemeCategory20);
+let simulation = d3.forceSimulation()
     .force("link", d3.forceLink().id(function(d) { return d.id; }))
     .force("charge", d3.forceManyBody())
     .force("radial", d3.forceRadial(40, width / 2, height / 2))

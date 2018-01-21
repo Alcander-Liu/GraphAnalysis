@@ -78,7 +78,7 @@ module.exports = function dijkstra(graph,head,tail)   {
             });
         }catch(e){
             if(e === "arrayBoundsOverflow"){
-                errorMessage = "越界访问!";
+                errorMessage = "越界访问、节点不存在!";
                 reject(errorMessage);
             }else if(e === "cannotReach"){
                 errorMessage = "两节点间不存在通路!"
