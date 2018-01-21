@@ -23,21 +23,20 @@ module.exports =  function connectedComponent (graph,weight) {
                 break;
             }
             nodequeue = [currentnode];
-            component.push(currentnode);
             ifNodeAdded[currentnode] = true;
             //求一个连通支;
             while(nodequeue.length > 0){
-                //将当前节点的后继加入队列;
                 for(let i = graph.node[currentnode].firstEdgeIndex;
                     i < graph.edge.length && i < graph.node[currentnode+1].firstEdgeIndex;++i)  {
-                    if(ifNodeAdded[graph.edge[i].endNode] === true) {
-                      continue;
-                    }
                     if(graph.edge[i].value <= weight){
-                        nodequeue.push(graph.edge[i].endNode);
-                        component.push(i);
-                        ifNodeAdded[graph.edge[i].endNode] = true;
+                            component.push(i);
+                            //如果当前节点后继未加入队列;
+                            if(ifNodeAdded[graph.edge[i].endNode] === false){
+                                nodequeue.push(graph.edge[i].endNode);
+                                ifNodeAdded[graph.edge[i].endNode] = true;
+                            }
                     }
+
                 }
                 nodequeue.shift();
                 if(nodequeue.length > 0){
