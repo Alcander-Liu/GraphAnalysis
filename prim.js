@@ -90,7 +90,7 @@ module.exports = function Prim(graph) {
     }
     resolve(forest);
     }catch(e)   { 
-        errorMessage = 'sth happened!';
+        errorMessage = '出现未知错误!';
         reject(errorMessage);
     }
   })
