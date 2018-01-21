@@ -58,7 +58,6 @@ searchButton.on('click', () => {
       .attr("stroke-opacity", 1.0);
     }
   });
-
 });
 
 minTreeButton.on('click', () => {
@@ -79,7 +78,9 @@ updateButton.on('click', () => {
     alert('请输入合法的数字!');
     return;
   }
-  
+  connectedComponent(data, parseInt(edgeWeight)).then((result) => {
+    console.log(result);
+  })
 })
 
 var svg = d3.select("svg"),
@@ -159,7 +160,6 @@ csvtojson
   console.log(JSON.stringify(data, null, '  '));
 
   link = svg.append("g")
-      //.attr("class", "links")
     .selectAll("line")
     .data(data.edge)
     .enter().append("line")
@@ -187,7 +187,6 @@ csvtojson
 
   function ticked() {
     link
-        //.attr("stroke", "red")
         .attr("x1", function(d) { return d.source.x; })
         .attr("y1", function(d) { return d.source.y; })
         .attr("x2", function(d) { return d.target.x; })
