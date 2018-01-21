@@ -33,6 +33,8 @@ connectedComponentButton.on('click', () => {
   connectedComponentBlock.show();
 })
 
+let link;
+
 searchButton.on('click', () => {
   let startNode = $('#startNode').val();
   let endNode = $('#endNode').val();
@@ -43,16 +45,17 @@ searchButton.on('click', () => {
     return;
   }
   dijkstra(data, parseInt(startNode), parseInt(endNode)).then((result) => {
-    let edges = d3.selectAll('.links');
-    edges.style("color", function(d, i) {
-      if(result.path.find(i)) return "#000000"
-      else return '#999';
-    })
-    let index = 0;
-    for(let i = 0; i < result.path.length; i++) {
-      while(index !== result.path[i])
-        index += 1;
-      edges[index].attr("color", '#000000');
+    console.log(result);
+    link.attr("stroke", "#999")
+    .attr("stroke-width", "0.5px")
+    .attr("stroke-opacity", 0.3);
+
+    for(let j = 0; j < result.path.length; j++) {
+      link.filter(function (d, i) {
+        return i === result.path[j];
+      }).attr("stroke", "red")
+      .attr("stroke-width", "2.0px")
+      .attr("stroke-opacity", 1.0);
     }
   });
 
@@ -155,12 +158,14 @@ csvtojson
   })
   console.log(JSON.stringify(data, null, '  '));
 
-  var link = svg.append("g")
-      .attr("class", "links")
+  link = svg.append("g")
+      //.attr("class", "links")
     .selectAll("line")
     .data(data.edge)
     .enter().append("line")
-      .attr("stroke-width", function(d) { return Math.sqrt(d.value); });
+      .attr("stroke", "#999")
+      .attr("stroke-width", "0.5px")
+      .attr("stroke-opacity", 0.3);
 
   var node = svg.append("g")
       .attr("class", "nodes")
@@ -182,6 +187,7 @@ csvtojson
 
   function ticked() {
     link
+        //.attr("stroke", "red")
         .attr("x1", function(d) { return d.source.x; })
         .attr("y1", function(d) { return d.source.y; })
         .attr("x2", function(d) { return d.target.x; })
