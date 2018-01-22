@@ -52,18 +52,19 @@ searchButton.on('click', () => {
     .attr("stroke-opacity", 0.3);
     
     // 记录路径顺序
-    let pathString = data.edge[result.path[0]].startNode.toString();
-    
+    let pathString = data.edge[result.path[result.path.length-1]].startNode.toString();
+    let pathStringWithName = data.edge[result.path[result.path.length-1]].source.id;
     // 遍历路径上的边，修改颜色
-    for(let j = 0; j < result.path.length; j++) {
+    for(let j = result.path.length - 1; j >= 0; j--) {
       pathString += (' => ' + data.edge[result.path[j]].endNode.toString());
+      pathStringWithName += (' => ' + data.edge[result.path[j]].target.id);
       link.filter(function (d, i) {
         return i === result.path[j];
       }).attr("stroke", "red")
       .attr("stroke-width", "2.0px")
       .attr("stroke-opacity", 1.0);
     }
-    alert('最短路径: ' + pathString + '\n路径长度为: ' + result.distance);
+    alert('最短路径: ' + pathString + '\n对应电影名称: ' + pathStringWithName + '\n路径长度为: ' + result.distance);
   })
   .catch((reason) => {
     alert(reason);
